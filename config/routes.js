@@ -1,19 +1,17 @@
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation'
 import Cam from '../screens/Cam'
+import Home from '../screens/Home'
 
 
 export default createAppContainer(createStackNavigator({
   home: {
-		screen: Cam,
+		screen: Home,
         path:'login/:user',
 	},
-},
-	{
-	  headerMode: 'none',
-	  navigationOptions: {
-	    headerVisible: false,
-	  }
+  cam: {
+		screen: Cam,
 	},
-))
+
+}))
 

@@ -5,7 +5,7 @@ const container_styles = {
 		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: '#316538',
+		backgroundColor: '#FFFFFF',
 	},
 };
 export default container_styles;

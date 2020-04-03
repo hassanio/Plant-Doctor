@@ -26,6 +26,22 @@ class CameraComponent extends Component {
     }
   }
 
+  static navigationOptions = ({ navigation }) => {
+    if (this.state.image) {
+      //Hide Header by returning null
+      return { header: null };
+    } else {
+      //Show Header by returning header
+      return {
+        title: navigation.getParam('Title', 'First Page'),
+        headerStyle: {
+          backgroundColor: navigation.getParam('BackgroundColor', '#ED2525'),
+        },
+        headerTintColor: navigation.getParam('HeaderTintColor', '#fff'),
+      };
+    }
+  };
+
 
   async componentWilllMount() {
     if (Constants.platform.ios) {
@@ -78,7 +94,7 @@ class CameraComponent extends Component {
         ])
         this.setState({ image: resizedPhoto.uri })}
 
-      } else {
+      } else if (index === 1) {
         let result = await ImagePicker.launchImageLibraryAsync({quality: 0.5})
         if (!result.cancelled) {
         const resizedPhoto = await ImageManipulator.manipulateAsync(result.uri, [
