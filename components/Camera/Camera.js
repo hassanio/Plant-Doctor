@@ -25,24 +25,7 @@ class CameraComponent extends Component {
         text: "",
     }
   }
-
-  static navigationOptions = ({ navigation }) => {
-    if (this.state.image) {
-      //Hide Header by returning null
-      return { header: null };
-    } else {
-      //Show Header by returning header
-      return {
-        title: navigation.getParam('Title', 'First Page'),
-        headerStyle: {
-          backgroundColor: navigation.getParam('BackgroundColor', '#ED2525'),
-        },
-        headerTintColor: navigation.getParam('HeaderTintColor', '#fff'),
-      };
-    }
-  };
-
-
+    
   async componentWilllMount() {
     if (Constants.platform.ios) {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL)
@@ -94,16 +77,8 @@ class CameraComponent extends Component {
         ])
         this.setState({ image: resizedPhoto.uri })}
 
-      } else if (index === 1) {
-        let result = await ImagePicker.launchImageLibraryAsync({quality: 0.5})
-        if (!result.cancelled) {
-        const resizedPhoto = await ImageManipulator.manipulateAsync(result.uri, [
-          { resize: { width: 800 }}
-        ])
-        this.setState({ image: resizedPhoto.uri })}
-      }
+        this.props.navigation.setParams({ hide: 'none' })
 
-        
 
         img_type = ((this.state.image).split(".").pop())
         img_type = "jpg"
@@ -138,6 +113,50 @@ class CameraComponent extends Component {
         this.setState({ loading: false })
         this.setState({ image: null })
 
+
+      } else if (index === 1) {
+        let result = await ImagePicker.launchImageLibraryAsync({quality: 0.5})
+        if (!result.cancelled) {
+        const resizedPhoto = await ImageManipulator.manipulateAsync(result.uri, [
+          { resize: { width: 800 }}
+        ])
+        this.setState({ image: resizedPhoto.uri })}
+
+        img_type = ((this.state.image).split(".").pop())
+        img_type = "jpg"
+        const type_ = "image/" + img_type;
+        const name_ = "photo." + img_type;
+
+
+        const formData = new FormData();
+        const photo = {
+          uri: this.state.image,
+          type: type_,
+          name: name_
+        }
+
+        formData.append('file', photo)
+
+        this.setState({ text: "Predicting your crop's disease..."})
+        // console.log(formData)
+        const res = await axios.post('https://plantdocc.onrender.com/analyze', formData, {
+            headers: {
+              'content-type': 'multipart/form-data',
+            }
+        }).then((response) => {
+            ToastAndroid.show(String(response.data['result']), ToastAndroid.LONG)
+            // console.log(response);
+
+
+        }).catch(function (err) {
+          ToastAndroid.show(String(err, ToastAndroid.LONG))
+        });
+
+        this.setState({ loading: false })
+        this.setState({ image: null })
+
+
+      }        
         // this._pickImage()
         
     }
@@ -159,7 +178,7 @@ class CameraComponent extends Component {
       return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           {!this.state.image && <Button
-            title="Tap to Launch Camera"
+            title="Upload Picture"
             onPress={this._OpenActionSheet}
           />}
           {this.state.image &&
