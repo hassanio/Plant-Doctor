@@ -1,19 +1,20 @@
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 import React, { Component } from 'react';
-import { Button, ActivityIndicator, Icon, Item, Dimensions, Platform, View, TextInput, TouchableOpacity, TouchableHighlight, Text, KeyboardAvoidingView, Image, ToastAndroid, Alert } from 'react-native';
+import { Button, TextStyle, ActivityIndicator, Icon, Item, Dimensions, Platform, View, TextInput, TouchableOpacity, TouchableHighlight, Text, KeyboardAvoidingView, Image, ToastAndroid, Alert } from 'react-native';
 const axios = require('axios')
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
-
+import { connectActionSheet, ActionSheetOptions, ActionSheetProps } from '@expo/react-native-action-sheet'
+import { SimpleLineIcons, Entypo } from '@expo/vector-icons';
 
 const imageWidth = Dimensions.get('window').width;
 const imageHeight = Dimensions.get('window').height;
 const DESIRED_RATIO = "16:9";
 
-
+const icon = (name: string) => <SimpleLineIcons name={name} size={24} color="#469B40"/>;
 
 class CameraComponent extends Component {
   constructor(props) {
@@ -35,15 +36,58 @@ class CameraComponent extends Component {
     }
   }
 
+  _OpenActionSheet = () => {
+  // Same interface as https://facebook.github.io/react-native/docs/actionsheetios.html
+    const options = ['Open Camera', 'Open Gallery'];
+    const cancelButtonIndex = 2;
+    const textStyle = {
+          fontWeight: '500',
+          color: '#469B40',
+        }
+    const containerStyle = {
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+        }
+    icons = [icon('camera'), icon('picture')]
 
-    _pickImage = async () => {
-      // console.log("HERE")
-      let result = await ImagePicker.launchCameraAsync({quality: 0.5})
-      if (!result.cancelled) {
+   
+    this.props.showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+        textStyle,
+        containerStyle,
+        icons
+      },
+      buttonIndex => {
+          this._pickImage(buttonIndex)
+        // Do something here depending on the button index selected
+      },
+  );
+};
+
+
+    _pickImage = async (index) => {
+
+      if (index === 0) {
+        let result = await ImagePicker.launchCameraAsync({quality: 0.5})
+
+        if (!result.cancelled) {
         const resizedPhoto = await ImageManipulator.manipulateAsync(result.uri, [
-          { resize: { width: 1000 }}
+          { resize: { width: 800 }}
         ])
-        this.setState({ image: resizedPhoto.uri })
+        this.setState({ image: resizedPhoto.uri })}
+
+      } else {
+        let result = await ImagePicker.launchImageLibraryAsync({quality: 0.5})
+        if (!result.cancelled) {
+        const resizedPhoto = await ImageManipulator.manipulateAsync(result.uri, [
+          { resize: { width: 800 }}
+        ])
+        this.setState({ image: resizedPhoto.uri })}
+      }
+
+        
 
         img_type = ((this.state.image).split(".").pop())
         img_type = "jpg"
@@ -68,9 +112,11 @@ class CameraComponent extends Component {
             }
         }).then((response) => {
             ToastAndroid.show(String(response.data['result']), ToastAndroid.LONG)
+            // console.log(response);
+
 
         }).catch(function (err) {
-          console.log(err);
+          ToastAndroid.show(String(err, ToastAndroid.LONG))
         });
 
         this.setState({ loading: false })
@@ -78,7 +124,6 @@ class CameraComponent extends Component {
 
         // this._pickImage()
         
-      }
     }
 
 
@@ -99,10 +144,10 @@ class CameraComponent extends Component {
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           {!this.state.image && <Button
             title="Tap to Launch Camera"
-            onPress={this._pickImage}
+            onPress={this._OpenActionSheet}
           />}
           {this.state.image &&
-                              <View>
+                              <View style = {{height: imageHeight, width: imageWidth}}>
                                 <Image
                                   style={{width: imageWidth, height: imageHeight}}
                                   source={{uri: this.state.image}}
@@ -127,4 +172,4 @@ class CameraComponent extends Component {
   }
 }
 
-export default CameraComponent
+export default  connectActionSheet(CameraComponent)
