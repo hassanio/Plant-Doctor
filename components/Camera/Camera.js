@@ -1,14 +1,14 @@
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 import React, { Component } from 'react';
-import { Button, TextStyle, ActivityIndicator, Icon, Item, Dimensions, Platform, View, TextInput, TouchableOpacity, TouchableHighlight, Text, KeyboardAvoidingView, Image, ToastAndroid, Alert } from 'react-native';
+import { Button, StatusBar, TextStyle, ActivityIndicator, Icon, Item, Dimensions, Platform, View, TextInput, TouchableOpacity, TouchableHighlight, Text, KeyboardAvoidingView, Image, ToastAndroid, Alert } from 'react-native';
 const axios = require('axios')
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import { connectActionSheet, ActionSheetOptions, ActionSheetProps } from '@expo/react-native-action-sheet'
-import { SimpleLineIcons, Entypo } from '@expo/vector-icons';
+import { SimpleLineIcons, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const imageWidth = Dimensions.get('window').width;
 const imageHeight = Dimensions.get('window').height;
@@ -96,8 +96,8 @@ class CameraComponent extends Component {
         formData.append('file', photo)
 
         this.setState({ text: "Predicting your crop's disease..."})
-        // console.log(formData)
-        const res = await axios.post('https://plantdocc.onrender.com/analyze', formData, {
+        console.log(formData)
+        const res = await axios.post('https://soil-sproj.herokuapp.com/analyze', formData, {
             headers: {
               'content-type': 'multipart/form-data',
             }
@@ -107,7 +107,7 @@ class CameraComponent extends Component {
 
 
         }).catch(function (err) {
-          ToastAndroid.show(String(err, ToastAndroid.LONG))
+          console.log(err)
         });
 
         this.setState({ loading: false })
@@ -139,7 +139,7 @@ class CameraComponent extends Component {
 
         this.setState({ text: "Predicting your crop's disease..."})
         // console.log(formData)
-        const res = await axios.post('https://plantdocc.onrender.com/analyze', formData, {
+        const res = await axios.post('https://soil-sproj.herokuapp.com/analyze', formData, {
             headers: {
               'content-type': 'multipart/form-data',
             }
@@ -149,7 +149,7 @@ class CameraComponent extends Component {
 
 
         }).catch(function (err) {
-          ToastAndroid.show(String(err, ToastAndroid.LONG))
+          ToastAndroid.show(String(err), ToastAndroid.LONG)
         });
 
         this.setState({ loading: false })
@@ -160,9 +160,6 @@ class CameraComponent extends Component {
         // this._pickImage()
         
     }
-
-
-
 
   render() {
 
@@ -176,11 +173,97 @@ class CameraComponent extends Component {
     }
     else {
       return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          {!this.state.image && <Button
-            title="Upload Picture"
-            onPress={this._OpenActionSheet}
-          />}
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+         <StatusBar backgroundColor="#469B40" />
+          {!this.state.image && 
+          <View style = {{height: imageHeight, width: imageWidth, paddingTop: imageHeight/35, paddingLeft: imageWidth/30, paddingRight: imageWidth/30  }}>
+            <Text
+            style = {{
+                fontWeight: '800',
+                alignItems: 'center',
+                fontSize: imageHeight/35,
+                fontFamily: 'sans-serif-medium',
+                color: '#469B40'
+            }}> 
+              Plant Doctor
+            </Text>
+            <Text
+            style = {{
+                fontWeight: '600',
+                alignItems: 'center',
+                fontSize: imageHeight/40,
+                fontFamily: 'sans-serif-medium',
+                color: '#469B40',
+                textAlign: 'center',
+                paddingTop: imageHeight/15
+            }}> 
+              Diagnose your crops using images
+            </Text>
+            <Image
+                  source = {require('../../assets/images/4.png')}
+                  style = {{ width: imageHeight/2.8, height: imageHeight/2.8, marginTop: imageHeight/40, marginRight: imageWidth/20, marginLeft: imageWidth/25, borderRadius: 5, alignSelf: 'center'}}
+            />
+            <View style = {{alignItems: 'center', justifyContent: 'center'}}>
+              <Text style = {{
+                fontSize: imageHeight/50,
+                fontFamily: 'sans-serif-medium',
+                fontWeight: '500',
+                textAlign: 'center',
+                color: 'darkgrey',
+                paddingRight: imageWidth/30,
+                paddingLeft: imageWidth/30
+
+              }}>
+                Make sure that the image is a top view image of a single leaf as shown below.
+              </Text>
+              <View style = {{
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingTop: imageHeight/20,
+                paddingBottom: imageHeight/20,
+
+
+              }}>
+                <Image
+                  source = {require('../../assets/images/1.jpg')}
+                  style = {{ width: imageHeight/8, height: imageHeight/8, marginRight: imageWidth/20, marginLeft: imageWidth/25, borderRadius: 5}}
+                />
+                <Image
+                  source = {require('../../assets/images/2.jpg')}
+                  style = {{ width: imageHeight/8, height: imageHeight/8, marginRight: imageWidth/20, borderRadius: 5}}
+                />
+                <Image
+                  source = {require('../../assets/images/3.jpg')}
+                  style = {{ width: imageHeight/8, height: imageHeight/8, marginRight: imageWidth/20, borderRadius: 5}}
+                />
+              </View>
+            </View>
+            <TouchableOpacity
+              style = {{
+                backgroundColor: '#469B40',
+                width: imageWidth*0.7,
+                height: imageHeight/15,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 10,
+                marginVertical: 20,
+                alignSelf: 'center',
+              }}
+              onPress={this._OpenActionSheet}
+              >
+              <Text style={{
+                fontWeight: '600',
+                alignItems: 'center',
+                fontSize: imageHeight/40,
+                color: '#FFFFFF',
+                fontFamily: 'sans-serif-medium'
+              }}>Diagnose Your Crop   </Text>
+              <Entypo name='leaf' size={imageHeight/30} color="#FFFFFF"/>
+            </TouchableOpacity>
+          </View>
+        }
           {this.state.image &&
                               <View style = {{height: imageHeight, width: imageWidth}}>
                                 <Image

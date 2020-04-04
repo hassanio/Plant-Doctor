@@ -9,17 +9,7 @@ console.disableYellowBox = true
 class Cam extends Component {
 
 	static navigationOptions = {
-	    title: 'Crop Diagnosis',
-	    headerStyle: {
-	      backgroundColor: '#469B40',
-	    },
-	    headerTintColor: '#fff',
-	    headerTitleStyle: {
-	      fontWeight: 'bold',
-		  // textAlign:"center",
-		  paddingLeft: (Dimensions.get('window').width)/6.3,
-		  flex:1
-	    },
+	    header: null
   };
 
 

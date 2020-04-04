@@ -6,7 +6,7 @@ import Home from '../screens/Home'
 
 export default createAppContainer(createStackNavigator({
   home: {
-		screen: Home,
+		screen: Cam,
         path:'login/:user',
         navigationOptions: ({ navigation }) => ({
 	      	title: 'Plant Doctor',
@@ -20,12 +20,6 @@ export default createAppContainer(createStackNavigator({
 		      textAlign:"center",
 		      flex:1
 		    },
-	    })
-	},
-  cam: {
-		screen: Cam,
-		navigationOptions: ({ navigation }) => ({
-	      title: 'Crop Diagnosis',
 	    })
 	},
 
