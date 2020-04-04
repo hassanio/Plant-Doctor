@@ -1,7 +1,7 @@
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation'
 import Cam from '../screens/Cam'
-import Home from '../screens/Home'
+import Pred from '../screens/Pred'
 
 
 export default createAppContainer(createStackNavigator({
@@ -22,6 +22,10 @@ export default createAppContainer(createStackNavigator({
 		    },
 	    })
 	},
+
+	pred: {
+		screen: Pred,
+	}
 
 }))
 
