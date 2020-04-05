@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
-import { Button, StatusBar, KeyboardAvoidingView, Dimensions, ToastAndroid } from 'react-native';
+import { Button, StatusBar, KeyboardAvoidingView, Dimensions, ToastAndroid, Image } from 'react-native';
 import { Container } from '../components/Container';
 
 
@@ -14,12 +14,10 @@ class Pred extends Component {
     super(props)
     this.state = {
         image: this.props.navigation.getParam('img'),
-        pred: this.props.navigation.getParam('pred')
+        pred: this.props.navigation.getParam('pred'),
+        crop: this.props.navigation.getParam('pred').split("___")[0],
+        diag: this.props.navigation.getParam('pred').split("___")[1].replace("_", " ")
     }
-  }
-
-  async componentDidMount() {
-		console.log(this.state.image)
   }
 
 	static navigationOptions = {
@@ -36,16 +34,29 @@ class Pred extends Component {
 		    headerForceInset: { top: 'never', bottom: 'never' }
 	}
 
+
 	render() {
 
 		return (
-			<Container>
-				<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-					<Button
-			           title="Diagnose Crop"
-			        />
-				</View>
-			</Container>
+			<View style={{ flex: 1, marginLeft: imageWidth/20}}>
+         		<StatusBar backgroundColor="#469B40" />
+					<Image
+		                  source = {{uri: this.state.image}}
+		                  style = {{ width: imageHeight/3.8, height: imageHeight/3.8, marginTop: imageHeight/40, borderRadius: 5, alignSelf: 'center', borderRadius: 20}}
+		            />
+
+		            <Text style = {{
+			                fontWeight: '600',
+			                fontSize: imageHeight/40,
+			                fontFamily: 'sans-serif-medium',
+			                color: '#469B40',
+			                textAlign: 'left',
+			                paddingTop: imageHeight/15
+			            }}> 
+		              Crop: {this.state.crop}{"\n"}
+		              Diagnosis: {this.state.diag}
+		            </Text>
+			</View>
 			)
 	}
 }

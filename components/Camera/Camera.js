@@ -68,13 +68,13 @@ class CameraComponent extends Component {
     _pickImage = async (index) => {
 
       if (index === 0) {
-        let result = await ImagePicker.launchCameraAsync({quality: 0.5, allowsEditing: true, aspect: [1,1]})
+        let result = await ImagePicker.launchCameraAsync({quality: 1, allowsEditing: true, aspect: [1,1]})
 
         if (!result.cancelled) {
-        // const resizedPhoto = await ImageManipulator.manipulateAsync(result.uri, [
-        //   { resize: { width: 1200 }}
-        // ])
-        this.setState({ image: result.uri })}
+        const resizedPhoto = await ImageManipulator.manipulateAsync(result.uri, [
+          { resize: { width: 256 }}
+        ])
+        this.setState({ image: resizedPhoto.uri })}
 
         img_type = ((this.state.image).split(".").pop())
         img_type = "jpg"
@@ -92,14 +92,14 @@ class CameraComponent extends Component {
         formData.append('file', photo)
 
         this.setState({ text: "Running Diagnostics..."})
-        console.log(formData)
+        // console.log(formData)
         const res = await axios.post('https://soil-sproj.herokuapp.com/analyze', formData, {
             headers: {
               'content-type': 'multipart/form-data',
             }
         }).then((response) => {
             this.setState({ pred: response.data['result']})
-            ToastAndroid.show(String(this.state.pred), ToastAndroid.LONG)
+            // ToastAndroid.show(String(this.state.pred), ToastAndroid.LONG)
             // console.log(response);
 
 
@@ -124,16 +124,15 @@ class CameraComponent extends Component {
 
         }
 
-        
-
+      
 
       } else if (index === 1) {
-        let result = await ImagePicker.launchImageLibraryAsync({quality: 0.5, allowsEditing: true, aspect: [1,1]})
+        let result = await ImagePicker.launchImageLibraryAsync({quality: 1, allowsEditing: true, aspect: [1,1]})
         if (!result.cancelled) {
-        // const resizedPhoto = await ImageManipulator.manipulateAsync(result.uri, [
-        //   { resize: { width: 1200 }}
-        // ])
-        this.setState({ image: result.uri })}
+        const resizedPhoto = await ImageManipulator.manipulateAsync(result.uri, [
+          { resize: { width: 256 }}
+        ])
+        this.setState({ image: resizedPhoto.uri })}
 
         img_type = ((this.state.image).split(".").pop())
         img_type = "jpg"
@@ -158,7 +157,7 @@ class CameraComponent extends Component {
             }
         }).then((response) => {
             this.setState({ pred: response.data['result']})
-            ToastAndroid.show(String(this.state.pred), ToastAndroid.LONG)
+            // ToastAndroid.show(String(this.state.pred), ToastAndroid.LONG)
             // console.log(response);
 
 
