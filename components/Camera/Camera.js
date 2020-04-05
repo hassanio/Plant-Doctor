@@ -22,6 +22,7 @@ class CameraComponent extends Component {
     this.state = {
         image: null,
         text: "",
+        pred: ""
     }
   }
     
@@ -66,104 +67,121 @@ class CameraComponent extends Component {
 
     _pickImage = async (index) => {
 
-      // console.log(this.props.navigation)
-
-
       if (index === 0) {
-
-        let result = await ImagePicker.launchCameraAsync({quality: 0.5})
+        let result = await ImagePicker.launchCameraAsync({quality: 0.5, allowsEditing: true, aspect: [1,1]})
 
         if (!result.cancelled) {
+        // const resizedPhoto = await ImageManipulator.manipulateAsync(result.uri, [
+        //   { resize: { width: 1200 }}
+        // ])
+        this.setState({ image: result.uri })}
 
-          const resizedPhoto = await ImageManipulator.manipulateAsync(result.uri, [
-            { resize: { width: 800 }}
-          ])
-        // this.setState({ image: resizedPhoto.uri })
+        img_type = ((this.state.image).split(".").pop())
+        img_type = "jpg"
+        const type_ = "image/" + img_type;
+        const name_ = "photo." + img_type;
 
 
-        this.props.navigation.navigate('pred', {
-          img: resizedPhoto.uri
-        })
+        const formData = new FormData();
+        const photo = {
+          uri: this.state.image,
+          type: type_,
+          name: name_
+        }
 
-      }
+        formData.append('file', photo)
+
+        this.setState({ text: "Running Diagnostics..."})
+        console.log(formData)
+        const res = await axios.post('https://soil-sproj.herokuapp.com/analyze', formData, {
+            headers: {
+              'content-type': 'multipart/form-data',
+            }
+        }).then((response) => {
+            this.setState({ pred: response.data['result']})
+            ToastAndroid.show(String(this.state.pred), ToastAndroid.LONG)
+            // console.log(response);
+
+
+        }).catch(function (err) {
+          console.log(err)
+        });
+
+        var temp_img = this.state.image
+
+        this.setState({ image: null })
+
+        if (this.state.pred != 'non') {
+
+          this.props.navigation.navigate('pred', {
+            img: temp_img,
+            pred: this.state.pred
+          })
+
+        } else {
+
+          ToastAndroid.show("Invalid image. No leaf found!", ToastAndroid.LONG)
+
+        }
 
         
 
 
-
-        // img_type = ((this.state.image).split(".").pop())
-        // img_type = "jpg"
-        // const type_ = "image/" + img_type;
-        // const name_ = "photo." + img_type;
-
-
-        // const formData = new FormData();
-        // const photo = {
-        //   uri: this.state.image,
-        //   type: type_,
-        //   name: name_
-        // }
-
-        // formData.append('file', photo)
-
-        // this.setState({ text: "Predicting your crop's disease..."})
-        // console.log(formData)
-        // const res = await axios.post('https://soil-sproj.herokuapp.com/analyze', formData, {
-        //     headers: {
-        //       'content-type': 'multipart/form-data',
-        //     }
-        // }).then((response) => {
-        //     ToastAndroid.show(String(response.data['result']), ToastAndroid.LONG)
-        //     // console.log(response);
-
-
-        // }).catch(function (err) {
-        //   console.log(err)
-        // });
-
-        // this.setState({ image: null })
-
-
       } else if (index === 1) {
-        let result = await ImagePicker.launchImageLibraryAsync({quality: 0.5})
+        let result = await ImagePicker.launchImageLibraryAsync({quality: 0.5, allowsEditing: true, aspect: [1,1]})
         if (!result.cancelled) {
-        const resizedPhoto = await ImageManipulator.manipulateAsync(result.uri, [
-          { resize: { width: 800 }}
-        ])
-        // this.setState({ image: resizedPhoto.uri })
-      }
+        // const resizedPhoto = await ImageManipulator.manipulateAsync(result.uri, [
+        //   { resize: { width: 1200 }}
+        // ])
+        this.setState({ image: result.uri })}
 
-        // img_type = ((this.state.image).split(".").pop())
-        // img_type = "jpg"
-        // const type_ = "image/" + img_type;
-        // const name_ = "photo." + img_type;
-
-
-        // const formData = new FormData();
-        // const photo = {
-        //   uri: this.state.image,
-        //   type: type_,
-        //   name: name_
-        // }
-
-        // formData.append('file', photo)
-
-        // this.setState({ text: "Predicting your crop's disease..."})
-        // // console.log(formData)
-        // const res = await axios.post('https://soil-sproj.herokuapp.com/analyze', formData, {
-        //     headers: {
-        //       'content-type': 'multipart/form-data',
-        //     }
-        // }).then((response) => {
-        //     ToastAndroid.show(String(response.data['result']), ToastAndroid.LONG)
-        //     // console.log(response);
+        img_type = ((this.state.image).split(".").pop())
+        img_type = "jpg"
+        const type_ = "image/" + img_type;
+        const name_ = "photo." + img_type;
 
 
-        // }).catch(function (err) {
-        //   ToastAndroid.show(String(err), ToastAndroid.LONG)
-        // });
+        const formData = new FormData();
+        const photo = {
+          uri: this.state.image,
+          type: type_,
+          name: name_
+        }
 
-        // this.setState({ image: null })
+        formData.append('file', photo)
+
+        this.setState({ text: "Running Diagnostics..."})
+        console.log(formData)
+        const res = await axios.post('https://soil-sproj.herokuapp.com/analyze', formData, {
+            headers: {
+              'content-type': 'multipart/form-data',
+            }
+        }).then((response) => {
+            this.setState({ pred: response.data['result']})
+            ToastAndroid.show(String(this.state.pred), ToastAndroid.LONG)
+            // console.log(response);
+
+
+        }).catch(function (err) {
+          console.log(err)
+        });
+
+        var temp_img = this.state.image
+
+        this.setState({ image: null })
+
+        if (this.state.pred != 'non') {
+
+          this.props.navigation.navigate('pred', {
+            img: temp_img,
+            pred: this.state.pred
+          })
+
+        } else {
+
+          ToastAndroid.show("Invalid image. No leaf found!", ToastAndroid.LONG)
+
+        }
 
 
       }        
@@ -185,7 +203,6 @@ class CameraComponent extends Component {
       return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center'}}>
          <StatusBar backgroundColor="#469B40" />
-          {!this.state.image && 
           <View style = {{height: imageHeight, width: imageWidth, paddingTop: imageHeight/35, paddingLeft: imageWidth/30, paddingRight: imageWidth/30  }}>
             <Text
             style = {{
@@ -273,7 +290,33 @@ class CameraComponent extends Component {
               <Entypo name='leaf' size={imageHeight/30} color="#FFFFFF"/>
             </TouchableOpacity>
           </View>
-        }
+          {this.state.image &&
+                                <View style = {{
+                                  height: imageHeight,
+                                  width: imageWidth,
+                                  position: 'absolute',
+                                  paddingLeft: 0,
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  opacity: 0.7,
+                                  backgroundColor: '#469B40',
+                                }}>
+            </View>}
+            {this.state.image &&
+              <View style = {{
+                                  height: imageHeight,
+                                  width: imageWidth,
+                                  position: 'absolute',
+                                  paddingLeft: 0,
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}>
+                                <Text style = {{fontSize: 20, color: '#FFFFFF', textAlign: 'center', fontWeight: 'bold', paddingBottom: imageHeight/40}}>{this.state.text}</Text>
+                                <ActivityIndicator style= {{alignSelf: 'center'}} color='#FFFFFF' size='large'/>
+
+            </View>
+
+            }
         </View>
       );
     }
