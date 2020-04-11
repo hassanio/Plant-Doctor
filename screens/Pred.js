@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
-import { Button, StatusBar, KeyboardAvoidingView, Dimensions, ToastAndroid, Image, StyleSheet } from 'react-native';
+import { Button, StatusBar, KeyboardAvoidingView, Dimensions, ToastAndroid, Image, StyleSheet, SafeAreaView, FlatList } from 'react-native';
 // import { Container } from '../components/Container';
 
-import { Container, Header, Content, Accordion, Icon} from "native-base";
+import { Container, Header, Content, Accordion, SimpleLineIcons, Icon} from "native-base";
 import { SliderBox } from "react-native-image-slider-box";
 
 
@@ -26,12 +26,12 @@ class Pred extends Component {
     this.state = {
         image: this.props.navigation.getParam('img'),
         pred: this.props.navigation.getParam('pred'),
-        crop: this.props.navigation.getParam('pred').split("___")[0],
-        diag: this.props.navigation.getParam('pred').split("___")[1].replace("_", " "),
+        crop: this.props.navigation.getParam('pred').split("___")[0].split('_').join(' '),
+        diag: this.props.navigation.getParam('pred').split("___")[1].split('_').join(' '),
 
         // image: "blah",
-        // pred: "Tomato___Early_blight",
-        // crop: "Apple",
+        // pred: "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+        // crop: "Tomato",
         // diag: "Cedar_apple_rust",
 	    healthy: false,
 
@@ -413,33 +413,90 @@ class Pred extends Component {
 	return (
       <View style={{
         flexDirection: "row",
-        padding: 15,
+        paddingLeft: imageWidth/30,
+        paddingRight: imageWidth/30,
+        paddingTop: imageHeight/50,
+        paddingBottom: imageHeight/50,
         justifyContent: "space-between",
         alignItems: "center" ,
         backgroundColor: "#F1F0F0" }}>
-      <Text style={{ fontWeight: "600", fontSize: imageHeight/35, fontFamily: 'sans-serif-medium', color: '#5F5F5F'}}>
+      <Text style={{ fontWeight: "600", fontSize: imageWidth/20, fontFamily: 'sans-serif-medium', color: '#5F5F5F'}}>
           {" "}{item.title}
         </Text>
         {expanded
-          ? <Icon style={{ fontSize: 18 }} name="remove-circle" />
-          : <Icon style={{ fontSize: 18 }} name="add-circle" />}
+          ? <Icon style={{ fontSize: 24 }} name="ios-arrow-dropup" />
+          : <Icon style={{ fontSize: 24 }} name="ios-arrow-dropdown" />}
       </View>
     );
 
 	}
 
     _renderContent(item) {
+
+    	var data = item.content.split('\u2022').join("").split('\n ')
+
+    	var list = []
+
+    	for (var i = 0; i < data.length; i++) {
+    		list.push({key: data[i]})
+		}
+
+		console.log(list)
+
 	    return (
-	      <Text
-	        style={{
-	          backgroundColor: "#DEDDDD",
-	          padding: 10,
-	          fontSize: imageHeight/38,
-              fontFamily: 'sans-serif-medium',
-	        }}
-	      >
-	        {item.content}
-	      </Text>
+
+
+	    <SafeAreaView style={styles.container}>
+	      <FlatList
+	        data={list}
+	        renderItem={({item}) => 
+
+	            <View style={{
+				    	flexDirection: 'column',
+				        alignItems: 'flex-start',
+				    }}>
+				    <View style={{
+				    	flexDirection: 'row',
+				        alignItems: 'flex-start',
+				        flexWrap: 'wrap',
+				        flex: 1
+				    }}>
+				        <View style={{width: 10}}>
+				            <Text>{'\u2022' + " "}</Text>
+				        </View>
+				        <View style={{flex: 1}}>
+				            <Text>
+				                <Text style={{}}>{item.keys}</Text>
+				            </Text>
+				        </View>
+				    </View>
+				</View>
+
+
+	    }
+	      />
+	    </SafeAreaView>
+
+	
+
+
+
+
+	      // <Text
+	      //   style={{
+		     //    backgroundColor: "#DEDDDD",
+		     //    paddingLeft: imageWidth/20,
+		     //    paddingRight: imageWidth/20,
+		     //    paddingTop: imageHeight/50,
+		     //    paddingBottom: imageHeight/50,
+		     //    justifyContent: "space-between",
+		     //    alignItems: "center" ,
+		     //    fontSize: imageWidth/25,
+	      //       fontFamily: 'sans-serif-medium',
+	      //   }}
+	      // >
+	      //   {item.content}
+	      // </Text>
 	    );
 
 
@@ -453,34 +510,32 @@ class Pred extends Component {
 			<View style={{ flex: 1}}>
          		<StatusBar backgroundColor="#469B40" />
 
-         		<View style = {{marginLeft:0}}>
+         		<View style = {{marginLeft:0, borderBottomWidth: 2, borderBottomColor: "#469B40"}}>
 	         		<SliderBox 
 	         			images={this.state.images}
-						  sliderBoxHeight={180}
-						  dotColor="#4CFC00"
+						  sliderBoxHeight={imageHeight/4}
+						  dotColor="#FFFF00"
 						  inactiveDotColor="#FFFFFF"
 						  circleLoop
-						  resizeMethod={'resize'}
 						  resizeMode={'cover'}
 						  imageLoadingColor='#469B40'
 						  autoplay
 						  paginationBoxStyle={{
 						    position: "absolute",
-						    bottom: 0,
-						    padding: 0,
-						    alignItems: "center",
 						    alignSelf: "center",
-						    justifyContent: "center",
-						    paddingVertical: imageHeight/4.4,
-						  	// backgroundColor: "gray"
+						    paddingRight:0,
+						    paddingLeft:0,
+						    paddingTop:3,
+						    paddingBottom:3,
+						    marginBottom: imageHeight/4.4,
+						    marginTop: imageHeight/30,
+						    backgroundColor: '#A9A9A9',
+						    borderRadius: 10,
 						  }}
 						    dotStyle={{
-						    width: 12,
-						    height: 12,
+						    width: 9,
+						    height: 9,
 						    borderRadius: 10,
-						    marginHorizontal: 0,
-						    padding: 0,
-						    margin: 0,
  						}}
 	         		/>
          		</View>
@@ -491,24 +546,25 @@ class Pred extends Component {
 					<Image
 							// source={require('./apple.jpeg')} 
 		                  source = {{uri: this.state.image}}
-		                  	style = {{ width: imageHeight/4.5, height: imageHeight/4.5, marginTop: -imageHeight/20, alignSelf: 'flex-end', borderRadius: 20}}
+		                  	style = {{ width: imageHeight/5, height: imageHeight/5, marginTop: -imageHeight/20, alignSelf: 'flex-end', borderRadius: 20, borderWidth: 2, borderColor: '#469B40'}}
 		            
 		            />
-		            <View style={{flexDirection: 'column', justifyContent: 'center', width: 0, flexGrow: 1}}>
+		            <View style={{flexDirection: 'column', justifyContent: 'center', width: 0, flexGrow: 1, paddingRight: imageWidth/30}}>
 			            <Text style = {{
-				                fontWeight: '400',
-				                fontSize: imageHeight/25,
+				                fontWeight: '200',
+				                fontSize: imageWidth/14,
 				                fontFamily: 'sans-serif-medium',
-				                color: '#5F5F5F',
+				                color: '#000000',
 				                textAlign: 'left',
 				                marginTop: imageHeight/100,
+				                paddingBottom: imageHeight/100
 
 				            }}> 
 			              {this.state.crop}
 			            </Text>
 			            <Text style = {{
 				                fontWeight: '600',
-				                fontSize: imageHeight/35,
+				                fontSize: imageWidth/22,
 				                fontFamily: 'sans-serif-medium',
 				                color: '#838383',
 				                textAlign: 'left',
@@ -530,6 +586,8 @@ class Pred extends Component {
 						animation={true}
 			            renderContent={this._renderContent}
             			renderHeader={this._renderHeader}
+            			icon="add"
+            			expandedIcon="remove"
 			          	 />
 			        </Content>
 			      </Container>)}
@@ -549,19 +607,9 @@ class Pred extends Component {
 
 const styles = StyleSheet.create({
   container: {
-  	paddingTop: imageHeight/40,
+  	paddingTop: imageHeight/15,
   	textAlign: 'center',
   },
-  responsiveImage: {
-	width: '60%',
-	// Without height undefined it won't work
-	height: undefined,
-	marginTop: imageHeight/25,
-	alignSelf: 'center',
-	// figure out your image aspect ratio
-    aspectRatio: 733 / 999,
-  },
-
 });
 
 

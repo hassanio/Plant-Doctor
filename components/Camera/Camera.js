@@ -207,7 +207,7 @@ class CameraComponent extends Component {
             style = {{
                 fontWeight: '800',
                 alignItems: 'center',
-                fontSize: imageHeight/25,
+                fontSize: imageWidth/15,
                 fontFamily: 'sans-serif-medium',
                 color: '#469B40'
             }}> 
@@ -217,7 +217,7 @@ class CameraComponent extends Component {
             style = {{
                 fontWeight: '600',
                 alignItems: 'center',
-                fontSize: imageHeight/40,
+                fontSize: imageWidth/20,
                 fontFamily: 'sans-serif-medium',
                 color: '#469B40',
                 textAlign: 'center',
@@ -231,7 +231,7 @@ class CameraComponent extends Component {
             />
             <View style = {{alignItems: 'center', justifyContent: 'center'}}>
               <Text style = {{
-                fontSize: imageHeight/50,
+                fontSize: imageWidth/24,
                 fontFamily: 'sans-serif-medium',
                 fontWeight: '500',
                 textAlign: 'center',
@@ -240,7 +240,7 @@ class CameraComponent extends Component {
                 paddingLeft: imageWidth/30
 
               }}>
-                Ensure that the image is a top view of a single leaf with a plain background as shown below.
+                Ensure that the image is a top view image of a single leaf as shown below.
               </Text>
               <View style = {{
                 justifyContent: 'center',
@@ -282,11 +282,11 @@ class CameraComponent extends Component {
               <Text style={{
                 fontWeight: '600',
                 alignItems: 'center',
-                fontSize: imageHeight/40,
+                fontSize: imageWidth/20,
                 color: '#FFFFFF',
                 fontFamily: 'sans-serif-medium'
               }}>Diagnose Your Crop   </Text>
-              <Entypo name='leaf' size={imageHeight/30} color="#FFFFFF"/>
+              <Entypo name='leaf' size={imageWidth/15} color="#FFFFFF"/>
             </TouchableOpacity>
           </View>
           {this.state.image &&
