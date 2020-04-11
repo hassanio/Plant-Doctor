@@ -207,7 +207,7 @@ class CameraComponent extends Component {
             style = {{
                 fontWeight: '800',
                 alignItems: 'center',
-                fontSize: imageHeight/35,
+                fontSize: imageHeight/25,
                 fontFamily: 'sans-serif-medium',
                 color: '#469B40'
             }}> 
@@ -240,7 +240,7 @@ class CameraComponent extends Component {
                 paddingLeft: imageWidth/30
 
               }}>
-                Make sure that the image is a top view image of a single leaf as shown below.
+                Ensure that the image is a top view of a single leaf with a plain background as shown below.
               </Text>
               <View style = {{
                 justifyContent: 'center',
