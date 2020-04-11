@@ -63,10 +63,6 @@ class Pred extends Component {
 
 	  componentDidMount(){
 
-	  	console.log("Pred:", this.state.pred)
-	  	console.log("Crop:", this.state.crop)
-	  	console.log("Diag:", this.state.diag)
-
 	  	if (this.state.diag === "healthy"){
 	  		this.setState({
 	  			healthy: true,
@@ -433,20 +429,17 @@ class Pred extends Component {
 
     _renderContent(item) {
 
-    	var data = item.content.split('\u2022').join("").split('\n ')
+    	var data = item.content.trim().split('\u2022').join("").split('\n ')
 
     	var list = []
 
     	for (var i = 0; i < data.length; i++) {
-    		list.push({key: data[i]})
+    		list.push({key: data[i].trim()})
 		}
-
-		console.log(list)
 
 	    return (
 
 
-	    <SafeAreaView style={styles.container}>
 	      <FlatList
 	        data={list}
 	        renderItem={({item}) => 
@@ -454,6 +447,12 @@ class Pred extends Component {
 	            <View style={{
 				    	flexDirection: 'column',
 				        alignItems: 'flex-start',
+				        backgroundColor: "#DEDDDD",
+						paddingLeft: imageWidth/50,
+						paddingRight: imageWidth/25,
+						paddingTop: imageHeight/120,
+						paddingBottom: imageHeight/120,
+						justifyContent: "space-between",
 				    }}>
 				    <View style={{
 				    	flexDirection: 'row',
@@ -461,12 +460,15 @@ class Pred extends Component {
 				        flexWrap: 'wrap',
 				        flex: 1
 				    }}>
-				        <View style={{width: 10}}>
-				            <Text>{'\u2022' + " "}</Text>
+				        <View style={{width: imageWidth/30, alignItems: 'center'}}>
+				            <Text style = {{fontWeight: '600', fontSize: 20}}>{'\u2022' + " "}</Text>
 				        </View>
 				        <View style={{flex: 1}}>
 				            <Text>
-				                <Text style={{}}>{item.keys}</Text>
+				                <Text style={{
+							        fontSize: imageWidth/25,
+						            fontFamily: 'sans-serif-medium',
+				                }}>{item.key}</Text>
 				            </Text>
 				        </View>
 				    </View>
@@ -475,24 +477,10 @@ class Pred extends Component {
 
 	    }
 	      />
-	    </SafeAreaView>
-
-	
-
-
-
 
 	      // <Text
 	      //   style={{
-		     //    backgroundColor: "#DEDDDD",
-		     //    paddingLeft: imageWidth/20,
-		     //    paddingRight: imageWidth/20,
-		     //    paddingTop: imageHeight/50,
-		     //    paddingBottom: imageHeight/50,
-		     //    justifyContent: "space-between",
-		     //    alignItems: "center" ,
-		     //    fontSize: imageWidth/25,
-	      //       fontFamily: 'sans-serif-medium',
+		     
 	      //   }}
 	      // >
 	      //   {item.content}
@@ -594,8 +582,14 @@ class Pred extends Component {
 			    {this.state.healthy && 
 			    	(
 						<Image
-								source = {require('../assets/images/healthy.jpg')}
-			                  	style={styles.responsiveImage}
+								source = {require('../assets/images/healthy.png')}
+			                  	style={{
+			                  		width: '60%',
+									height: undefined,
+									marginTop: imageHeight/25,
+									alignSelf: 'center',
+								    aspectRatio: 733 / 999,
+			                  	}}
 			            />
 			    	)}
 			    </View>
